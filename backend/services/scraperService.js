@@ -77,6 +77,18 @@ export const getPlayerDetails = async (id) => {
     // 5. Bio Summary (Working)
     playerData.bioSummary = $('#player-bio').text().trim();
 
+    // 6. Profile Image (Working)
+
+    const imageUrl = $('img')
+      .filter((i, el) => {
+        const src = $(el).attr('src') || '';
+        return src.includes('cricbuzz') && src.includes('gthumb');
+      })
+      .first()
+      .attr('src');
+
+    playerData.image = imageUrl || null;
+
     return playerData;
   } catch (err) {
     console.error("Error fetching player details:", err.message);
