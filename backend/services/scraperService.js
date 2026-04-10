@@ -89,6 +89,19 @@ export const getPlayerDetails = async (id) => {
 
     playerData.image = imageUrl || null;
 
+    // 7. Country and Flag
+
+    // 7. Country + Flag
+    const flagImg = $('img')
+      .filter((i, el) => {
+        const src = $(el).attr('src') || '';
+        return src.includes('/30x20/'); // flag images are 30x20
+      })
+      .first();
+
+    playerData.country = flagImg.attr('alt');
+    playerData.flag = flagImg.attr('src');
+
     return playerData;
   } catch (err) {
     console.error("Error fetching player details:", err.message);
