@@ -2,12 +2,15 @@ import { useState } from "react";
 import { Search } from "lucide-react";
 import LegendsList from "../components/LegendsList/LegendsList";
 import Navbar from "../components/Navbar/Navbar";
+import { useNavigate } from "react-router-dom";
 
 function BrowsePage() {
   const [query, setQuery] = useState("");
+  const navigate = useNavigate();
 
   const handleSearch = () => {
-    console.log("Search player:", query);
+    if (!query.trim()) return; 
+    navigate(`/player/${encodeURIComponent(query)}`);
   };
 
   return (

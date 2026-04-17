@@ -1,6 +1,4 @@
 function Player({data}){
-
-    console.log(data);
     
     return(
         <div>
