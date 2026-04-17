@@ -1,1 +1,20 @@
-@import "tailwindcss";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Your Fixed Dark Palette */
+    --background: #d0dae9; 
+    --foreground: #e9eef5;
+    --card: #151a21;
+    --accent: #3b82f6;
+    --muted: #94a3b8;
+    --border: #1e293b;
+  }
+
+  body {
+    /* Apply globally to all pages */
+    @apply bg-background text-foreground antialiased;
+  }
+}

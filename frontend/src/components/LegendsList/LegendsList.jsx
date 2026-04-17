@@ -1,0 +1,63 @@
+import { useEffect, useState } from "react";
+import axios from "axios";
+import PlayerCard from "../PlayerCard/PlayerCard";
+
+function LegendsList() {
+  const legends = [
+    "Sachin Tendulkar",
+    "Chris Gayle",
+    "Jacques Kallis",
+    "Brian Lara",
+    "Virat Kohli",
+    "MS Dhoni",
+    "Ricky Ponting",
+    "Kapil Dev",
+  ];
+
+  const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function getPlayers() {
+      try {
+        const requests = legends.map((name) =>
+          axios.get(
+            `http://localhost:5475/api/players/search?name=${encodeURIComponent(
+              name
+            )}`
+          )
+        );
+
+        const responses = await Promise.all(requests);
+
+        const players = responses.map((res) => ({
+          name: res.data.name,
+          personalInfo: res.data.personalInfo,
+          image: res.data.image,
+          country: res.data.country,
+          flag: res.data.flag,
+        }));
+
+        setData(players);
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    getPlayers();
+  });
+
+  if (loading) return <p className="text-center text-gray-950">Loading...</p>;
+
+  return (
+    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 my-1">
+      {data.map((player, index) => (
+        <PlayerCard key={index} {...player} />
+      ))}
+    </div>
+  );
+}
+
+export default LegendsList;
