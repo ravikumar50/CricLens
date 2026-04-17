@@ -12,7 +12,7 @@ const LandingPage = () => {
         CricLens
       </h1>
       
-      <p className="max-w-2xl text-xl text-muted leading-relaxed mb-12 font-medium text-black">
+      <p className="max-w-2xl text-xl leading-relaxed mb-12 font-medium text-gray-800">
         The ultimate cricket analytics hub. Search for any player to get live career stats, 
         ICC rankings, and recent form directly from the field.
       </p>

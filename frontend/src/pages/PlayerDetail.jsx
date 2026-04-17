@@ -38,7 +38,7 @@ function PlayerDetail() {
 
   // ✅ Loading state
   if (loading) {
-    return <p className="text-center mt-10">Loading...</p>;
+    return <p className="text-black text-center mt-10">Loading...</p>;
   }
 
   // ❌ Not Found UI
