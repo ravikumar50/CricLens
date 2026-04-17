@@ -47,12 +47,23 @@
 
       // 3. ICC Rankings (Working)
       playerData.iccRankings = [];
-      $('h3:contains("ICC RANKINGS")').next('div').find('table tbody tr').each((i, el) => {
-        const format = $(el).find('td').eq(0).text().trim();
-        const current = $(el).find('td').eq(1).text().trim();
-        const best = $(el).find('td').eq(2).text().trim();
-        if (format && format !== "Format") playerData.iccRankings.push({ format, current, best });
-      });
+      const seen = new Set();
+
+      $('h3:contains("ICC RANKINGS")')
+        .next('div')
+        .find('table tbody tr')
+        .each((i, el) => {
+          const format = $(el).find('td').eq(0).text().trim();
+          const current = $(el).find('td').eq(1).text().trim();
+          const best = $(el).find('td').eq(2).text().trim();
+
+          const key = `${format}-${current}-${best}`;
+
+          if (format && format !== "Format" && !seen.has(key)) {
+            seen.add(key);
+            playerData.iccRankings.push({ format, current, best });
+          }
+        });
 
       // 4. Summaries (Working)
       const extractSummary = (tableTitle) => {
@@ -101,6 +112,22 @@
 
       playerData.country = flagImg.attr('alt');
       playerData.flag = flagImg.attr('src');
+
+
+      // 8. Teams (ACTUAL FIX BASED ON YOUR HTML)
+      const teamsText = $('h3:contains("TEAMS")')
+        .next('div')
+        .text()
+        .trim();
+
+      if (teamsText) {
+        playerData.teams = teamsText
+          .split(',')
+          .map(team => team.trim())
+          .filter(team => team.length > 0);
+      } else {
+        playerData.teams = [];
+      }
 
       return playerData;
     } catch (err) {
