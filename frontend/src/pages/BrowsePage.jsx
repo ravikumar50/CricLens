@@ -1,26 +1,66 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Search } from "lucide-react";
 import LegendsList from "../components/LegendsList/LegendsList";
 import Navbar from "../components/Navbar/Navbar";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 function BrowsePage() {
   const [query, setQuery] = useState("");
+  const [suggestions, setSuggestions] = useState([]);
+  const [loading, setLoading] = useState(false);
+
   const navigate = useNavigate();
 
+  // 🔍 Handle search button / Enter
   const handleSearch = () => {
-    if (!query.trim()) return; 
+    if (!query.trim()) return;
     navigate(`/player/${encodeURIComponent(query)}`);
+    setSuggestions([]);
   };
+
+  // 🎯 Select from dropdown
+  const selectPlayer = (name) => {
+    setQuery(name);
+    setSuggestions([]);
+    navigate(`/player/${encodeURIComponent(name)}`);
+  };
+
+  // ⚡ Debounced API call
+  useEffect(() => {
+    const delay = setTimeout(async () => {
+      if (query.length < 2) {
+        setSuggestions([]);
+        return;
+      }
+
+      try {
+        setLoading(true);
+
+        const res = await axios.get(
+          `http://localhost:5475/api/players/suggest?name=${query}`
+        );
+
+        setSuggestions(res.data);
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    }, 300);
+
+    return () => clearTimeout(delay);
+  }, [query]);
 
   return (
     <div className="h-screen flex flex-col px-3 py-1">
 
-      {/* Title */}
-       <Navbar/>
+      {/* Navbar */}
+      <Navbar />
 
-      {/* Search Bar */}
-      <div className="w-full flex items-center gap-2 mb-2">
+      {/* 🔍 Search Bar */}
+      <div className="w-full flex items-center gap-2 mb-2 relative">
+
         <input
           type="text"
           placeholder="Search player..."
@@ -37,6 +77,28 @@ function BrowsePage() {
           <Search size={18} />
           Search
         </button>
+
+        {/* 🔥 Suggestions Dropdown */}
+        {suggestions.length > 0 && (
+          <div className="absolute top-full left-0 w-full bg-card border border-border mt-1 rounded-xl shadow-lg z-50">
+            {suggestions.map((name, i) => (
+              <div
+                key={i}
+                onClick={() => selectPlayer(name)}
+                className="px-4 py-2 hover:bg-border cursor-pointer"
+              >
+                {name}
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* ⏳ Loading (only when no suggestions yet) */}
+        {loading && suggestions.length === 0 && (
+          <div className="absolute top-full left-0 mt-1 px-4 py-2 text-gray-400">
+            Searching...
+          </div>
+        )}
       </div>
 
       {/* Section Title */}
