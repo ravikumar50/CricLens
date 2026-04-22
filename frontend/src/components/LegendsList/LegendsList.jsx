@@ -22,9 +22,7 @@ function LegendsList() {
       try {
         const requests = legends.map((name) =>
           axios.get(
-            `http://localhost:5475/api/players/search?name=${encodeURIComponent(
-              name
-            )}`
+            `http://localhost:5475/api/players/search?name=${encodeURIComponent(name)}`
           )
         );
 
@@ -47,9 +45,29 @@ function LegendsList() {
     }
 
     getPlayers();
-  });
+  }, []);
 
-  if (loading) return <p className="text-center text-gray-950">Loading...</p>;
+
+  if (loading) {
+    return (
+      <div className="flex flex-col items-center justify-center h-[300px] gap-4">
+
+        {/* Spinner */}
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-accent"></div>
+
+        {/* Text */}
+        <p className="text-gray-400 text-lg">Loading Legends...</p>
+
+        {/* Optional GFG-style button */}
+        <button
+          disabled
+          className="bg-accent px-6 py-2 rounded-lg opacity-50 cursor-not-allowed"
+        >
+          Loading...
+        </button>
+      </div>
+    );
+  }
 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 my-1">
