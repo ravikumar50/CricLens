@@ -4,7 +4,7 @@ import axios from "axios";
 import Player from "../components/Player/Player";
 
 function PlayerDetail() {
-  const { name } = useParams();
+  const { id, name } = useParams();
 
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState(null);
@@ -19,11 +19,15 @@ function PlayerDetail() {
         setNotFound(false);
 
         const res = await axios.get(
-          `${backendUrl}/api/players/search?name=${encodeURIComponent(name)}`
+          `${backendUrl}/api/players/search?playerId=${id}`
         );
 
         if (res.data && res.data.name) {
-          setData(res.data);
+          setData({
+            name : name,
+            ...res.data
+          });
+          
         } else {
           setNotFound(true);
         }

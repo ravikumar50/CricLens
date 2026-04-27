@@ -4,6 +4,8 @@ import LegendsList from "../components/LegendsList/LegendsList";
 import Navbar from "../components/Navbar/Navbar";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { slugify } from "../utils/slugify";
+
 
 function BrowsePage() {
   const [query, setQuery] = useState("");
@@ -21,11 +23,14 @@ function BrowsePage() {
   };
 
   // 🎯 Select from dropdown
-  const selectPlayer = (name) => {
-    setQuery(name);
+  const selectPlayer = (player) => {
+    const slug = slugify(player.name);
+
+    navigate(`/player/${player.id}/${slug}`);
+    setQuery(player.name);
     setSuggestions([]);
-    navigate(`/player/${encodeURIComponent(name)}`);
   };
+
 
   // ⚡ Debounced API call
   useEffect(() => {
@@ -82,13 +87,13 @@ function BrowsePage() {
         {/* 🔥 Suggestions Dropdown */}
         {suggestions.length > 0 && (
           <div className="absolute top-full left-0 w-full bg-card border border-border mt-1 rounded-xl shadow-lg z-50">
-            {suggestions.map((name, i) => (
+            {suggestions.map((player) => (
               <div
-                key={i}
-                onClick={() => selectPlayer(name)}
+                key={player.id}
+                onClick={() => selectPlayer(player)}
                 className="px-4 py-2 hover:bg-border cursor-pointer"
               >
-                {name}
+                {player.name}
               </div>
             ))}
           </div>

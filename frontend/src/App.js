@@ -13,7 +13,7 @@ function App() {
            <Route path="/" element={<LandingPage/>}/>
            <Route path="/browse" element={<BrowsePage/>}/>
            <Route path="/compare" element={<ComparePage/>}/>
-           <Route path="/player/:name" element={<PlayerDetail/>}/>
+           <Route path="/player/:id/:name" element={<PlayerDetail />} />
         </Routes>
       </div>
     </BrowserRouter>

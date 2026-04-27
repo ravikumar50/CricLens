@@ -4,14 +4,14 @@ import PlayerCard from "../PlayerCard/PlayerCard";
 
 function LegendsList() {
   const legends = [
-    "Sachin Tendulkar",
-    "Chris Gayle",
-    "Jacques Kallis",
-    "Brian Lara",
-    "Virat Kohli",
-    "MS Dhoni",
-    "Ricky Ponting",
-    "Kapil Dev",
+    {"id" : "25","name": "Sachin Tendulkar"},
+    {"id" : "247","name": "Chris Gayle"},
+    {"id" : "213","name": "Jacques Kallis"},
+    {"id" : "240","name": "Brian Lara"},
+    {"id" : "1413","name": "Virat Kohli"},
+    {"id" : "265","name": "MS Dhoni"},
+    {"id" : "38","name": "Ricky Ponting"},
+    {"id" : "3838","name": "Kapil Dev"},
   ];
 
   const [data, setData] = useState([]);
@@ -22,25 +22,27 @@ function LegendsList() {
   useEffect(() => {
     async function getPlayers() {
       try {
-        const requests = await Promise.all(
-          legends.map((name) =>
-            axios.get(
-              `${backendUrl}/api/players/search?name=${encodeURIComponent(name)}`
-            )
+        const responses = await Promise.allSettled(
+          legends.map((legend) =>
+            axios.get(`${backendUrl}/api/players/search?playerId=${legend.id}`)
           )
         );
 
-        const responses = await Promise.allSettled(requests);
+        
 
         const players = responses
           .filter(r => r.status === "fulfilled")
           .map(r => ({
+            id : r.value.data.id,
             name: r.value.data.name,
             personalInfo: r.value.data.personalInfo,
             image: r.value.data.image,
             country: r.value.data.country,
             flag: r.value.data.flag,
           }));
+
+          
+          
 
         setData(players);
       } catch (err) {

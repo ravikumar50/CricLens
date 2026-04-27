@@ -1,10 +1,11 @@
 import { useState } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
+import { slugify } from "../utils/slugify";
 
 function ComparePage() {
-  const [p1, setP1] = useState("");
-  const [p2, setP2] = useState("");
+  const [p1, setP1] = useState(null);
+  const [p2, setP2] = useState(null);
 
   const [data1, setData1] = useState(null);
   const [data2, setData2] = useState(null);
@@ -16,10 +17,15 @@ function ComparePage() {
   const [loading, setLoading] = useState(false);
   const backendUrl = process.env.REACT_APP_BACKEND_URL;
 
+
+
   // 🔍 Fetch suggestions
   const handleSearchChange = async (value, player) => {
-    if (player === 1) setP1(value);
-    else setP2(value);
+    if (player === 1) {
+      setP1(prev => ({ ...prev, name: value }));
+    } else {
+      setP2(prev => ({ ...prev, name: value }));
+    }
 
     if (value.length < 2) {
       player === 1 ? setSuggestions1([]) : setSuggestions2([]);
@@ -31,21 +37,33 @@ function ComparePage() {
         `${backendUrl}/api/players/suggest?name=${value}`
       );
 
-      if (player === 1) setSuggestions1(res.data);
-      else setSuggestions2(res.data);
+      player === 1 ? setSuggestions1(res.data) : setSuggestions2(res.data);
     } catch (err) {
       console.error(err);
     }
   };
 
+
   // ✅ Select suggestion
-  const selectPlayer = (name, player) => {
-    if (player === 1) {
-      setP1(name);
+  const selectPlayer = (player, type) => {
+    if (type === 1) {
+      setP1(player);
       setSuggestions1([]);
     } else {
-      setP2(name);
+      setP2(player);
       setSuggestions2([]);
+    }
+  };
+
+  const handleKeyDown = (e, player) => {
+    if (e.key === "Enter") {
+      const list = player === 1 ? suggestions1 : suggestions2;
+
+      if (list.length > 0) {
+        selectPlayer(list[0], player);
+      } else {
+        player === 1 ? setSuggestions1([]) : setSuggestions2([]);
+      }
     }
   };
 
@@ -55,11 +73,11 @@ function ComparePage() {
       setLoading(true);
 
       const res1 = await axios.get(
-        `${backendUrl}/api/players/search?name=${encodeURIComponent(p1)}`
+        `${backendUrl}/api/players/search?playerId=${p1.id}`
       );
 
       const res2 = await axios.get(
-        `${backendUrl}/api/players/search?name=${encodeURIComponent(p2)}`
+        `${backendUrl}/api/players/search?playerId=${p2.id}`
       );
 
       setData1(res1.data);
@@ -92,21 +110,22 @@ function ComparePage() {
 
           <div className="w-full max-w-xs relative">
             <input
-              value={p1}
+              value={p1?.name || ""}
               onChange={(e) => handleSearchChange(e.target.value, 1)}
+              onKeyDown={(e) => handleKeyDown(e, 1)}
               placeholder="Search Player 1"
               className="w-full px-4 py-2 rounded-lg bg-card border border-border focus:ring-2 focus:ring-accent outline-none"
             />
 
             {suggestions1.length > 0 && (
               <div className="absolute w-full bg-card border border-border mt-1 rounded-lg shadow-lg z-10">
-                {suggestions1.map((name, i) => (
+                {suggestions1.map((player) => (
                   <div
-                    key={i}
-                    onClick={() => selectPlayer(name, 1)}
+                    key={player.id}
+                    onClick={() => selectPlayer(player, 1)}
                     className="px-4 py-2 hover:bg-border cursor-pointer"
                   >
-                    {name}
+                    {player.name}
                   </div>
                 ))}
               </div>
@@ -114,7 +133,7 @@ function ComparePage() {
           </div>
 
           {data1 && (
-            <Link to={`/player/${data1.name}`} className="flex flex-col items-center">
+            <Link to={`/player/${data1.id}/${slugify(data1.name)}`} className="flex flex-col items-center">
               <img
                 src={data1.image}
                 alt={data1.name}
@@ -131,7 +150,7 @@ function ComparePage() {
         <div className="flex flex-col items-center justify-start gap-2 mt-1">
           <button
             onClick={fetchPlayers}
-            disabled={loading}
+            disabled={loading || !p1?.id || !p2?.id}
             className="bg-accent px-6 py-2 rounded-lg hover:bg-blue-500 transition disabled:opacity-50"
           >
             {loading ? "Loading..." : "Compare"}
@@ -145,21 +164,22 @@ function ComparePage() {
 
           <div className="w-full max-w-xs relative">
             <input
-              value={p2}
+              value={p2?.name || ""}
               onChange={(e) => handleSearchChange(e.target.value, 2)}
+              onKeyDown={(e) => handleKeyDown(e, 2)}
               placeholder="Search Player 2"
               className="w-full px-4 py-2 rounded-lg bg-card border border-border focus:ring-2 focus:ring-accent outline-none"
             />
 
             {suggestions2.length > 0 && (
               <div className="absolute w-full bg-card border border-border mt-1 rounded-lg shadow-lg z-10">
-                {suggestions2.map((name, i) => (
+                {suggestions2.map((player) => (
                   <div
-                    key={i}
-                    onClick={() => selectPlayer(name, 2)}
+                    key={player.id}
+                    onClick={() => selectPlayer(player, 2)}
                     className="px-4 py-2 hover:bg-border cursor-pointer"
                   >
-                    {name}
+                    {player.name}
                   </div>
                 ))}
               </div>
@@ -167,7 +187,7 @@ function ComparePage() {
           </div>
 
           {data2 && (
-            <Link to={`/player/${data2.name}`} className="flex flex-col items-center">
+            <Link to={`/player/${data2.id}/${slugify(data2.name)}`} className="flex flex-col items-center">
               <img
                 src={data2.image}
                 alt={data2.name}

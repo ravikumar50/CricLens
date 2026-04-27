@@ -1,9 +1,13 @@
 import { Link } from "react-router-dom";
 
-function PlayerCard({ name, personalInfo, image, country, flag }) {
+function PlayerCard({id, name, personalInfo, image, country, flag }) {
+
   return (
 
-    <Link to={`/player/${name}`} className="no-underline">
+    
+    
+
+    <Link to={`/player/${id}/${name}`} className="no-underline">
       <div className="bg-card border border-border rounded-2xl p-4 w-[280px] h-[265px] hover:scale-[1.02] transition-all duration-300 shadow-md">
         
         {/* Top Section */}
