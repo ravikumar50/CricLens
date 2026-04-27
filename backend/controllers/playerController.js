@@ -8,8 +8,6 @@ function escapeRegex(text) {
 
 export const searchPlayer = async (req, res) => {
   const { name } = req.query;
-
-  console.log(name);
   
   // ❗ Validate input
   if (!name || !name.trim()) {
@@ -41,6 +39,8 @@ export const searchPlayer = async (req, res) => {
 
     // 🔍 Fetch detailed data
     const playerDetails = await getPlayerDetails(playerRecord.id);
+    
+    
 
     if (!playerDetails) {
       return res.status(500).json({
