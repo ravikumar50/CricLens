@@ -9,6 +9,8 @@ function escapeRegex(text) {
 export const searchPlayer = async (req, res) => {
   const { name } = req.query;
 
+  console.log(name);
+  
   // ❗ Validate input
   if (!name || !name.trim()) {
     return res.status(400).json({ message: "Name is required" });
