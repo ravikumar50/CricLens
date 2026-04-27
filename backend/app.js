@@ -21,7 +21,7 @@ app.get("/api/players/suggest", async (req, res) => {
     // ✅ remove duplicates
     const uniqueNames = [...new Set(players.map(p => p.name))];
 
-    res.json(uniqueNames.slice(0, 10)); // limit to 10
+    res.json(uniqueNames.slice(0, 5)); // limit to 10
   } catch (err) {
     console.error(err);
     res.status(500).send("Server Error");
