@@ -1,7 +1,6 @@
 import { useState } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
-import Navbar from "../components/Navbar/Navbar";
 
 function ComparePage() {
   const [p1, setP1] = useState("");
@@ -118,6 +117,7 @@ function ComparePage() {
             <Link to={`/player/${data1.name}`} className="flex flex-col items-center">
               <img
                 src={data1.image}
+                alt={data1.name}
                 className="w-24 h-24 rounded-xl object-cover hover:scale-105 transition"
               />
               <h2 className="font-bold text-gray-800 hover:text-accent transition">
@@ -170,6 +170,7 @@ function ComparePage() {
             <Link to={`/player/${data2.name}`} className="flex flex-col items-center">
               <img
                 src={data2.image}
+                alt={data2.name}
                 className="w-24 h-24 rounded-xl object-cover hover:scale-105 transition"
               />
               <h2 className="font-bold text-gray-800 hover:text-accent transition">
