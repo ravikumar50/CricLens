@@ -10,6 +10,9 @@ function ComparePage() {
   const [data1, setData1] = useState(null);
   const [data2, setData2] = useState(null);
 
+  const [activeIndex1, setActiveIndex1] = useState(-1);
+  const [activeIndex2, setActiveIndex2] = useState(-1);
+
   const [suggestions1, setSuggestions1] = useState([]);
   const [suggestions2, setSuggestions2] = useState([]);
 
@@ -37,7 +40,13 @@ function ComparePage() {
         `${backendUrl}/api/players/suggest?name=${value}`
       );
 
-      player === 1 ? setSuggestions1(res.data) : setSuggestions2(res.data);
+      if (player === 1) {
+        setSuggestions1(res.data);
+        setActiveIndex1(-1);
+      } else {
+        setSuggestions2(res.data);
+        setActiveIndex2(-1);
+      }
     } catch (err) {
       console.error(err);
     }
@@ -49,20 +58,37 @@ function ComparePage() {
     if (type === 1) {
       setP1(player);
       setSuggestions1([]);
+      setActiveIndex1(-1);
     } else {
       setP2(player);
       setSuggestions2([]);
+      setActiveIndex2(-1);
     }
   };
 
   const handleKeyDown = (e, player) => {
-    if (e.key === "Enter") {
-      const list = player === 1 ? suggestions1 : suggestions2;
+    const list = player === 1 ? suggestions1 : suggestions2;
+    const activeIndex = player === 1 ? activeIndex1 : activeIndex2;
+    const setActiveIndex = player === 1 ? setActiveIndex1 : setActiveIndex2;
 
+    if (e.key === "ArrowDown") {
+      e.preventDefault();
       if (list.length > 0) {
-        selectPlayer(list[0], player);
-      } else {
-        player === 1 ? setSuggestions1([]) : setSuggestions2([]);
+        setActiveIndex((prev) => (prev + 1) % list.length);
+      }
+    }
+
+    else if (e.key === "ArrowUp") {
+      e.preventDefault();
+      if (list.length > 0) {
+        setActiveIndex((prev) => (prev - 1 + list.length) % list.length);
+      }
+    }
+
+    else if (e.key === "Enter") {
+      if (list.length > 0) {
+        const index = activeIndex >= 0 ? activeIndex : 0;
+        selectPlayer(list[index], player);
       }
     }
   };
@@ -119,11 +145,13 @@ function ComparePage() {
 
             {suggestions1.length > 0 && (
               <div className="absolute w-full bg-card border border-border mt-1 rounded-lg shadow-lg z-10">
-                {suggestions1.map((player) => (
+                {suggestions1.map((player, index) => (
                   <div
                     key={player.id}
                     onClick={() => selectPlayer(player, 1)}
-                    className="px-4 py-2 hover:bg-border cursor-pointer"
+                    className={`px-4 py-2 cursor-pointer ${
+                      index === activeIndex1 ? "bg-accent text-white" : "hover:bg-border"
+                    }`}
                   >
                     {player.name}
                   </div>
@@ -173,11 +201,13 @@ function ComparePage() {
 
             {suggestions2.length > 0 && (
               <div className="absolute w-full bg-card border border-border mt-1 rounded-lg shadow-lg z-10">
-                {suggestions2.map((player) => (
+                {suggestions2.map((player, index) => (
                   <div
                     key={player.id}
                     onClick={() => selectPlayer(player, 2)}
-                    className="px-4 py-2 hover:bg-border cursor-pointer"
+                    className={`px-4 py-2 cursor-pointer ${
+                      index === activeIndex2 ? "bg-accent text-white" : "hover:bg-border"
+                    }`}
                   >
                     {player.name}
                   </div>

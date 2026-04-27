@@ -11,6 +11,7 @@ function BrowsePage() {
   const [query, setQuery] = useState("");
   const [suggestions, setSuggestions] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [activeIndex, setActiveIndex] = useState(-1);
 
   const backendUrl = process.env.REACT_APP_BACKEND_URL;
   const navigate = useNavigate();
@@ -29,6 +30,7 @@ function BrowsePage() {
     navigate(`/player/${player.id}/${slug}`);
     setQuery(player.name);
     setSuggestions([]);
+    setActiveIndex(-1);
   };
 
 
@@ -37,6 +39,7 @@ function BrowsePage() {
     const delay = setTimeout(async () => {
       if (query.length < 2) {
         setSuggestions([]);
+        setActiveIndex(-1);
         return;
       }
 
@@ -47,7 +50,8 @@ function BrowsePage() {
           `${backendUrl}/api/players/suggest?name=${query}`
         );
 
-        setSuggestions(res.data);
+        setSuggestions(res.data); 
+        setActiveIndex(-1);
       } catch (err) {
         console.error(err);
       } finally {
@@ -72,7 +76,30 @@ function BrowsePage() {
           placeholder="Search player..."
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          onKeyDown={(e) => e.key === "Enter" && handleSearch()}
+          onKeyDown={(e) => {
+            if (e.key === "ArrowDown") {
+              e.preventDefault();
+              if (suggestions.length > 0) {
+                setActiveIndex((prev) => (prev + 1) % suggestions.length);
+              }
+            }
+
+            else if (e.key === "ArrowUp") {
+              e.preventDefault();
+              if (suggestions.length > 0) {
+                setActiveIndex((prev) => (prev - 1 + suggestions.length) % suggestions.length);
+              }
+            }
+
+            else if (e.key === "Enter") {
+              if (suggestions.length > 0) {
+                const index = activeIndex >= 0 ? activeIndex : 0;
+                selectPlayer(suggestions[index]);
+              } else {
+                handleSearch();
+              }
+            }
+          }}
           className="flex-1 px-4 py-2 rounded-xl bg-card border border-border text-white focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent"
         />
 
@@ -87,11 +114,15 @@ function BrowsePage() {
         {/* 🔥 Suggestions Dropdown */}
         {suggestions.length > 0 && (
           <div className="absolute top-full left-0 w-full bg-card border border-border mt-1 rounded-xl shadow-lg z-50">
-            {suggestions.map((player) => (
+            {suggestions.map((player, index) => (
               <div
                 key={player.id}
                 onClick={() => selectPlayer(player)}
-                className="px-4 py-2 hover:bg-border cursor-pointer"
+                className={`px-4 py-2 cursor-pointer ${
+                  index === activeIndex
+                    ? "bg-accent text-white"
+                    : "hover:bg-border"
+                }`}
               >
                 {player.name}
               </div>
