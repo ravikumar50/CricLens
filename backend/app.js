@@ -18,13 +18,15 @@ app.get("/api/players/suggest", async (req, res) => {
       name: { $regex: name, $options: "i" }
     });
 
-    
-
-    res.json(players.map(p => p.name));
+    res.json(players.map(p => ({
+      id: p.id,
+      name: p.name
+    })));
   } catch (err) {
     console.error(err);
     res.status(500).send("Server Error");
   }
 });
+
 
 export default app;

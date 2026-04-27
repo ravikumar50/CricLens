@@ -7,38 +7,16 @@ function escapeRegex(text) {
 }
 
 export const searchPlayer = async (req, res) => {
-  const { name } = req.query;
+  const {playerId} = req.query;
   
-  // ❗ Validate input
-  if (!name || !name.trim()) {
-    return res.status(400).json({ message: "Name is required" });
-  }
+  
 
   try {
-    const trimmedName = name.trim();
-    const safeName = escapeRegex(trimmedName);
 
     let playerRecord;
 
-    // ✅ 1. Try EXACT match first (best UX)
-    playerRecord = await Player.findOne({
-      name: { $regex: `^${safeName}$`, $options: "i" }
-    });
-
-    // ✅ 2. If not found → fallback to PARTIAL match
-    if (!playerRecord) {
-      playerRecord = await Player.findOne({
-        name: { $regex: safeName, $options: "i" }
-      }).sort({ name: 1 }); // consistent "first"
-    }
-
-    // ❌ No player found
-    if (!playerRecord) {
-      return res.status(404).json({ message: "No Player Found" });
-    }
-
     // 🔍 Fetch detailed data
-    const playerDetails = await getPlayerDetails(playerRecord.id);
+    const playerDetails = await getPlayerDetails(playerId);
     
     
 
@@ -50,8 +28,8 @@ export const searchPlayer = async (req, res) => {
 
     // ✅ Success response
     return res.status(200).json({
-      id: playerRecord.id,
-      name: playerRecord.name,
+      id: playerId,
+     // name: playerRecord.name,
       ...playerDetails
     });
 

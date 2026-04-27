@@ -13,6 +13,11 @@
       const $ = cheerio.load(res.data);
       const playerData = {};
 
+      // 🔹 Extract player name
+      const playerName = $('span.text-white.font-semibold.text-xl').first().text().trim();
+
+      playerData.name = playerName || null;
+
       // 1. Personal Information (Working)
       playerData.personalInfo = {};
       $('h3:contains("PERSONAL INFORMATION")').next('div').find('.w-full.bg-white').each((i, el) => {
