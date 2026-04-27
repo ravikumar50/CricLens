@@ -1,6 +1,7 @@
 import { useState } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
+import Navbar from "../components/Navbar/Navbar";
 
 function ComparePage() {
   const [p1, setP1] = useState("");
@@ -14,6 +15,7 @@ function ComparePage() {
 
   const [format, setFormat] = useState("ODI");
   const [loading, setLoading] = useState(false);
+  const port = process.env.REACT_APP_BACKEND_PORT;
 
   // 🔍 Fetch suggestions
   const handleSearchChange = async (value, player) => {
@@ -27,7 +29,7 @@ function ComparePage() {
 
     try {
       const res = await axios.get(
-        `http://localhost:5475/api/players/suggest?name=${value}`
+        `http://localhost:${port}/api/players/suggest?name=${value}`
       );
 
       if (player === 1) setSuggestions1(res.data);
@@ -54,11 +56,11 @@ function ComparePage() {
       setLoading(true);
 
       const res1 = await axios.get(
-        `http://localhost:5475/api/players/search?name=${encodeURIComponent(p1)}`
+        `http://localhost:${port}/api/players/search?name=${encodeURIComponent(p1)}`
       );
 
       const res2 = await axios.get(
-        `http://localhost:5475/api/players/search?name=${encodeURIComponent(p2)}`
+        `http://localhost:${port}/api/players/search?name=${encodeURIComponent(p2)}`
       );
 
       setData1(res1.data);

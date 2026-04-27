@@ -16,13 +16,15 @@ function LegendsList() {
 
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
-
+  const port = process.env.REACT_APP_BACKEND_PORT;
+  console.log(port);
+  
   useEffect(() => {
     async function getPlayers() {
       try {
         const requests = legends.map((name) =>
           axios.get(
-            `http://localhost:5475/api/players/search?name=${encodeURIComponent(name)}`
+            `http://localhost:${port}/api/players/search?name=${encodeURIComponent(name)}`
           )
         );
 
