@@ -10,7 +10,7 @@ function BrowsePage() {
   const [suggestions, setSuggestions] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  const port = process.env.REACT_APP_BACKEND_PORT;
+  const backendUrl = process.env.REACT_APP_BACKEND_URL;
   const navigate = useNavigate();
 
   // 🔍 Handle search button / Enter
@@ -39,7 +39,7 @@ function BrowsePage() {
         setLoading(true);
 
         const res = await axios.get(
-          `http://localhost:${port}/api/players/suggest?name=${query}`
+          `${backendUrl}/api/players/suggest?name=${query}`
         );
 
         setSuggestions(res.data);

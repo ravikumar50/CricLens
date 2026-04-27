@@ -16,27 +16,31 @@ function LegendsList() {
 
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
-  const port = process.env.REACT_APP_BACKEND_PORT;
-  console.log(port);
+  const backendUrl = process.env.REACT_APP_BACKEND_URL;
+  
   
   useEffect(() => {
     async function getPlayers() {
       try {
-        const requests = legends.map((name) =>
-          axios.get(
-            `http://localhost:${port}/api/players/search?name=${encodeURIComponent(name)}`
+        const requests = await Promise.all(
+          legends.map((name) =>
+            axios.get(
+              `${backendUrl}/api/players/search?name=${encodeURIComponent(name)}`
+            )
           )
         );
 
-        const responses = await Promise.all(requests);
+        const responses = await Promise.allSettled(requests);
 
-        const players = responses.map((res) => ({
-          name: res.data.name,
-          personalInfo: res.data.personalInfo,
-          image: res.data.image,
-          country: res.data.country,
-          flag: res.data.flag,
-        }));
+        const players = responses
+          .filter(r => r.status === "fulfilled")
+          .map(r => ({
+            name: r.value.data.name,
+            personalInfo: r.value.data.personalInfo,
+            image: r.value.data.image,
+            country: r.value.data.country,
+            flag: r.value.data.flag,
+          }));
 
         setData(players);
       } catch (err) {
@@ -47,7 +51,7 @@ function LegendsList() {
     }
 
     getPlayers();
-  }, []);
+  },[]);
 
 
   if (loading) {

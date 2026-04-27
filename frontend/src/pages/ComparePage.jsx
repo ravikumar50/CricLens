@@ -15,7 +15,7 @@ function ComparePage() {
 
   const [format, setFormat] = useState("ODI");
   const [loading, setLoading] = useState(false);
-  const port = process.env.REACT_APP_BACKEND_PORT;
+  const backendUrl = process.env.REACT_APP_BACKEND_URL;
 
   // 🔍 Fetch suggestions
   const handleSearchChange = async (value, player) => {
@@ -29,7 +29,7 @@ function ComparePage() {
 
     try {
       const res = await axios.get(
-        `http://localhost:${port}/api/players/suggest?name=${value}`
+        `${backendUrl}/api/players/suggest?name=${value}`
       );
 
       if (player === 1) setSuggestions1(res.data);
@@ -56,11 +56,11 @@ function ComparePage() {
       setLoading(true);
 
       const res1 = await axios.get(
-        `http://localhost:${port}/api/players/search?name=${encodeURIComponent(p1)}`
+        `${backendUrl}/api/players/search?name=${encodeURIComponent(p1)}`
       );
 
       const res2 = await axios.get(
-        `http://localhost:${port}/api/players/search?name=${encodeURIComponent(p2)}`
+        `${backendUrl}/api/players/search?name=${encodeURIComponent(p2)}`
       );
 
       setData1(res1.data);

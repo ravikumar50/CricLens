@@ -10,7 +10,7 @@ function PlayerDetail() {
   const [data, setData] = useState(null);
   const [notFound, setNotFound] = useState(false);
 
-  const port = process.env.REACT_APP_BACKEND_PORT;
+  const backendUrl = process.env.REACT_APP_BACKEND_URL;
 
   useEffect(() => {
     async function fetchPlayerDetail() {
@@ -19,7 +19,7 @@ function PlayerDetail() {
         setNotFound(false);
 
         const res = await axios.get(
-          `http://localhost:${port}/api/players/search?name=${encodeURIComponent(name)}`
+          `${backendUrl}/api/players/search?name=${encodeURIComponent(name)}`
         );
 
         if (res.data && res.data.name) {
