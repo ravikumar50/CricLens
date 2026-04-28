@@ -80,7 +80,7 @@ function Player({ data }) {
 
         {/* Batting Form */}
         <div className="bg-gray-900 p-4 rounded-xl">
-            <h2 className="text-lg font-semibold mb-3">Batting Form</h2>
+            <h2 className="text-lg font-semibold mb-3">Recent Batting Form</h2>
 
             <table className="w-full text-sm text-center table-fixed">
                 <thead>
@@ -107,7 +107,7 @@ function Player({ data }) {
 
         {/* Bowling Form */}
         <div className="bg-gray-900 p-4 rounded-xl">
-            <h2 className="text-lg font-semibold mb-3">Bowling Form</h2>
+            <h2 className="text-lg font-semibold mb-3">Recent Bowling Form</h2>
 
             <table className="w-full text-sm text-center table-fixed">
                 <thead>
