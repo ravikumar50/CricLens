@@ -12,6 +12,10 @@ function LegendsList() {
     {"id" : "265","name": "MS Dhoni"},
     {"id" : "38","name": "Ricky Ponting"},
     {"id" : "3838","name": "Kapil Dev"},
+    {"id" : "110","name": "Muthiah Muralidaran"},
+    {"id" : "135","name": "Shane Warne"},
+    {"id" : "41","name": "Glenn McGrath"},
+    {"id" : "111","name": "Lasith Malinga"},
   ];
 
   const [data, setData] = useState([]);
