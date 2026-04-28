@@ -78,7 +78,7 @@ function LegendsList() {
   }
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 my-1 justify-items-center">
+    <div className="grid gap-6 my-1 [grid-template-columns:repeat(auto-fit,minmax(260px,280px))] justify-center">
       {data.map((player, index) => (
         <PlayerCard key={index} {...player} />
       ))}

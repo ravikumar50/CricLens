@@ -8,7 +8,7 @@ function PlayerCard({id, name, personalInfo, image, country, flag }) {
     
 
     <Link to={`/player/${id}/${name}`} className="no-underline">
-      <div className="bg-card border border-border rounded-2xl p-4 w-[280px] h-[265px] hover:scale-[1.02] transition-all duration-300 shadow-md">
+      <div className="bg-card border border-border rounded-2xl p-4 w-full h-full hover:scale-[1.02] transition-all duration-300 shadow-md">
         
         {/* Top Section */}
         <div className="flex items-center gap-4">
@@ -37,7 +37,9 @@ function PlayerCard({id, name, personalInfo, image, country, flag }) {
         {/* Bottom Section (Personal Info) */}
         <div className="text-sm text-muted space-y-1">
           <p><span className="text-white font-medium">Born:</span> {personalInfo.born}</p>
-          <p><span className="text-white font-medium">Birthplace:</span> {personalInfo.birthplace}</p>
+          <p className="line-clamp-2">
+            <span className="text-white font-medium">Birthplace:</span> {personalInfo.birthplace}
+          </p>
           <p><span className="text-white font-medium">Role:</span> {personalInfo.role}</p>
           <p><span className="text-white font-medium">Batting:</span> {personalInfo.battingstyle}</p>
           <p><span className="text-white font-medium">Bowling:</span> {personalInfo.bowlingstyle}</p>
